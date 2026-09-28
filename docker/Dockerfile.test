@@ -1,0 +1,16 @@
+# Test image: Python + LibreOffice so the end-to-end tests run instead of skipping.
+FROM debian:bookworm-slim
+
+ENV DEBIAN_FRONTEND=noninteractive HOME=/tmp/home PYTHONDONTWRITEBYTECODE=1
+
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends \
+      python3 libreoffice-core libreoffice-draw libreoffice-writer \
+      fonts-liberation fonts-dejavu fonts-crosextra-carlito \
+ && rm -rf /var/lib/apt/lists/* \
+ && mkdir -p /tmp/home && chmod 777 /tmp/home
+
+WORKDIR /app
+COPY find_pub.py pub2pdf.py ./
+COPY tests ./tests
+CMD ["python3", "-m", "unittest", "discover", "-s", "tests", "-v"]

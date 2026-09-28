@@ -1,0 +1,19 @@
+# LibreOffice headless image used to convert Microsoft Publisher (.pub) files to PDF.
+FROM debian:bookworm-slim
+
+ENV DEBIAN_FRONTEND=noninteractive \
+    HOME=/tmp/home
+
+RUN sed -i 's/^Components: main$/Components: main contrib/' /etc/apt/sources.list.d/debian.sources \
+ && echo "ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true" | debconf-set-selections \
+ && apt-get update \
+ && apt-get install -y --no-install-recommends \
+      libreoffice-core libreoffice-draw libreoffice-writer \
+      fonts-liberation fonts-dejavu fonts-crosextra-carlito fonts-crosextra-caladea \
+      ttf-mscorefonts-installer fontconfig ca-certificates \
+ && fc-cache -f \
+ && rm -rf /var/lib/apt/lists/* \
+ && mkdir -p /tmp/home && chmod 777 /tmp/home
+
+WORKDIR /work
+ENTRYPOINT ["soffice", "--headless", "--norestore", "--nologo", "--nolockcheck"]

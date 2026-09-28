@@ -1,0 +1,16 @@
+services:
+  test:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.test
+    environment:
+      # Optional: mount real .pub files at /samples and set this to test them too.
+      PUB2PDF_SAMPLE_DIR: ${PUB2PDF_SAMPLE_DIR:-}
+    volumes:
+      - ${PUB2PDF_SAMPLES_HOST:-./tests/samples}:/samples:ro
+
+  converter:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.converter
+    image: pub2pdf-converter

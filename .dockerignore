@@ -1,0 +1,6 @@
+.venv
+.claude
+CLAUDE.md
+tests/samples
+*.pdf
+pub2pdf_report.csv
